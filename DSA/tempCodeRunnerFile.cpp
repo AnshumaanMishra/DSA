@@ -1,3 +1,1 @@
- int localArray[]){
-        //     IntList integerList(size, localArray);
-        // }
+(*firstNode).getValue()
