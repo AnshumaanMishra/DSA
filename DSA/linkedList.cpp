@@ -1,112 +1,191 @@
 #include <stdio.h>
-#include <iostream>
+#include <stdlib.h>
 using namespace std;
-
 
 class Node{
     private:
+        // Attributes
         int value;
-        Node* Address;
-    public:
+        Node* nextNode;
 
+    public:
+    
+        // Empty Constructor
         Node(){
             value = 0;
         }
-        Node(int localValue, Node* nextAddress){
+
+        // Value-and-address Constructor
+        Node(int localValue, Node* localAddress){
             value = localValue;
-            Address = nextAddress;
-            // *(tempMemoryLocation + 1) = localNextAddress;
+            nextNode = localAddress;
         }
 
-        Node(int localValue){
+        // Value Setter
+        void setValue(int localValue){
             value = localValue;
         }
 
-        void setNextAddress(Node* nextAddress){
-            Address = nextAddress;
+        // Address Setter
+        void setAddress(Node* localAddress){
+            nextNode = localAddress;
         }
 
-        Node* nextNode(){
-            return Address;
-        }
-
+        // Value Getter
         int getValue(){
-            printf("Value = %d", value);
             return value;
         }
+
+        // Next Node Address Getter
+        Node* getNextNode(){
+            return nextNode;
+        }
 };
+
 
 class linkedList{
     private:
-        int sizeOfElement = sizeof(int);
-        Node container;
         Node* firstNode;
         Node* lastNode;
-        int len = 0;
+        int sizeOfNode = sizeof(Node);
+        int lengthOfList = 0;
         int iter;
+        // Node* container = (Node*)malloc(sizeof(Node)); // Container for last node
+        Node* container = new Node; // Container for last node
+        
+
     public:
-        linkedList(int localSize, int* localArray){
-            if (localSize > 1){
-                Node* firstNode = (Node*)malloc(sizeof(Node));
-                *firstNode = Node(localArray[0]);
-                int i;
-                Node* tempNodeStorage;
-                Node* prevNode = firstNode;
-                len++;
-                
-                for(int i = 1; i < localSize - 1; i++){
-                    Node* tempNode = (Node*)malloc(sizeof(Node));
-                    prevNode->setNextAddress(tempNode);
-                    *tempNode = Node(localArray[i]);
-                    // printf("a = %d", (*tempNode).getValue());
-                    prevNode = tempNode;
-                    len++;
+
+        // Constructor
+        linkedList(int sizeOfList, int* localArray){
+            if(sizeOfList < 0){
+                printf("Invalid Size");
+                return;
+            }
+
+            if(sizeOfList != 0){
+                // Creation of first Node
+                firstNode = new Node;
+                *firstNode = Node(localArray[0], container);
+
+                Node* previousNode = firstNode; // Current Node
+                lengthOfList ++;
+                iter = 1;
+                for(int i = 1; i < sizeOfList-1; i++){
                     iter = i;
-                    printf("\nFirst Node Value = %d\n", (*firstNode).getValue());
+                    
+                    Node* currentNode = new Node;
+                    // printf("\nCurrent Iteration: %d\n", i);
+                    // printf("\nNext Node Location: %p", currentNode);
+                    previousNode->setAddress(currentNode);
+                    // printf("\nCurrent Node Location: %p\n", (*previousNode).getNextNode());
+                    *currentNode = Node(localArray[i], container);
+                    previousNode = currentNode;
+                    lengthOfList ++;
                 }
-                iter++;
-                // printf("iter = %d", iter);
-                Node* lastNode = (Node*)malloc(sizeof(Node));
-                *lastNode = Node(localArray[iter], &container);
-                printf("\nLastNodeValue = %d\n", (*lastNode).getValue());
-                // lastNode->setNextAddress(&container);
-                printf("\nFirst Node Value = %d\n", (*firstNode).getValue());
-                
-                len++;
+
+                if(sizeOfList>1){
+                    // Creation of last Node
+                    iter++;            
+                    // printf("\nLast Element: %d\n ", localArray[iter]);
+                    lastNode = new Node;
+                    *lastNode = Node(localArray[iter], container);
+                    
+                    previousNode->setAddress(lastNode);
+                    lengthOfList ++;
+                }
             }
-            else if(localSize==1){
-                Node* firstNode = (Node*)malloc(sizeof(Node));
-                *firstNode = Node(localArray[0]);
-                // lastNode = firstNode;
-            }
-            printf("\nFirst Node Value = %d\n", (*firstNode).getValue());
-            printf("Local Begins");
         }
 
         void printList(){
-            printf("\nFirst Node Value = %d\n", (*firstNode).getValue());
-            printf("\nStart Printing \n");
+            // First Print
             Node* currentNode = firstNode;
-            for(int i2 = 0; i2 < len; i2++){
-                printf("\n%d \n", (*currentNode).getValue());
-                printf("\nPrinted \n");
-                Node* temp = (*currentNode).nextNode();
-                currentNode = temp;
+            for(int i = 0; i < lengthOfList; i++){
+                printf("\n%d: %d\n", i, currentNode->getValue());
+                // printf("Next Node Location: %p\n", (*currentNode).getNextNode());
+                currentNode = currentNode->getNextNode();
             }
-            printf("\nEnd Printing \n");
         }
-};
+
+        void freeMemory(){
+            Node* currentNode = firstNode;
+            for(int i = 0; i < lengthOfList; i++){
+                Node* newNode = currentNode->getNextNode();
+                free(currentNode);
+                currentNode = newNode;
+            }
+        }
+
+        int getElementByIndex(int index){
+            Node* currentNode = firstNode;
+            for(int i = 0; i < index; i++){
+                currentNode = currentNode->getNextNode();
+            }
+            return currentNode->getValue();
+        }
+
+        int search(int element){
+            Node* currentNode = firstNode;
+            for(int i = 0; i < lengthOfList; i++){
+                if(currentNode->getValue() == element){
+                    break;
+                }
+                currentNode = currentNode->getNextNode();
+            }
+            return currentNode->getValue();
+        }
+
+        void insertElement(int index, int element){
+            if(lengthOfList == 0){
+                Node* firstNode = new Node;
+                *firstNode = Node(1, container);
+            }
+            else{
+                Node* currentNode = firstNode;
+                for(int i = 0; i < index-1; i++){
+                    currentNode = currentNode->getNextNode();
+                }
+                // Node* nextNode = (*currentNode).getNextNode();
+                Node* insertedNode = new Node;
+                (*insertedNode) = Node(element, currentNode->getNextNode());
+                currentNode->setAddress(insertedNode);
+                lengthOfList++;
+            }            
+        }
+
+        void insertElement(int element){
+            int index = lengthOfList - 1;
+            if(lengthOfList == 0){
+                Node* firstNode = new Node;
+                *firstNode = Node(1, container);
+            }
+            else{
+                Node* currentNode = firstNode;
+                for(int i = 0; i < index-1; i++){
+                    currentNode = currentNode->getNextNode();
+                }
+                // Node* nextNode = (*currentNode).getNextNode();
+                Node* insertedNode = new Node;
+                (*insertedNode) = Node(element, currentNode->getNextNode());
+                currentNode->setAddress(insertedNode);
+                lengthOfList++;
+            }            
+        }
+
+
+    };
 
 
 int main(){
-    // printf("Line 1\n");
-    int passedSize = 3;
-    // printf("Line 2\n");
-    int passedArray[] = {1, 2, 3};
-    // printf("Line 3\n");
-    linkedList list1(passedSize, passedArray);
-    printf("\nInitiate Printing \n");
+
+    int passedArray[] = {};
+    int sizeOfPassedArray = sizeof(passedArray)/sizeof(int);
+    printf("\n1\n");
+    linkedList list1 = linkedList(sizeOfPassedArray, passedArray);
+    // list1.printList();
+    // printf("Element at Index: 2 is %d", list1.getElementByIndex(2));
+    printf("\n1\n");
+    list1.insertElement(0, 2);
+    printf("\n1\n");
     list1.printList();
-    return 0;
 }
- 
