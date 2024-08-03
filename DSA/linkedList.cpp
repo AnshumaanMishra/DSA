@@ -36,6 +36,7 @@ class Node{
             return value;
         }
 
+
         // Next Node Address Getter
         Node* getNextNode(){
             return nextNode;
@@ -136,20 +137,27 @@ class linkedList{
         }
 
         void insertElement(int index, int element){
-            if(lengthOfList == 0){
+            if((lengthOfList == 0) && (index > 0)){
                 Node* firstNode = new Node;
                 *firstNode = Node(1, container);
+                return;
             }
-            else{
-                Node* currentNode = firstNode;
-                for(int i = 0; i < index-1; i++){
-                    currentNode = currentNode->getNextNode();
-                }
-                // Node* nextNode = (*currentNode).getNextNode();
+            else if(index == 0){
                 Node* insertedNode = new Node;
-                (*insertedNode) = Node(element, currentNode->getNextNode());
-                currentNode->setAddress(insertedNode);
-                lengthOfList++;
+                *insertedNode = Node(element, firstNode);
+                firstNode = insertedNode;
+            }
+            Node* currentNode = firstNode;
+            for(int i = 0; i < index-1; i++){
+                currentNode = currentNode->getNextNode();
+            }
+            // Node* nextNode = (*currentNode).getNextNode();
+            Node* insertedNode = new Node;
+            (*insertedNode) = Node(element, currentNode->getNextNode());
+            currentNode->setAddress(insertedNode);
+            lengthOfList++;
+            if (index == 0){
+                firstNode = insertedNode;
             }            
         }
 
@@ -158,34 +166,69 @@ class linkedList{
             if(lengthOfList == 0){
                 Node* firstNode = new Node;
                 *firstNode = Node(1, container);
+                return;
             }
-            else{
-                Node* currentNode = firstNode;
-                for(int i = 0; i < index-1; i++){
-                    currentNode = currentNode->getNextNode();
-                }
-                // Node* nextNode = (*currentNode).getNextNode();
-                Node* insertedNode = new Node;
-                (*insertedNode) = Node(element, currentNode->getNextNode());
-                currentNode->setAddress(insertedNode);
-                lengthOfList++;
-            }            
+            Node* currentNode = firstNode;
+            for(int i = 0; i < index-1; i++){
+                currentNode = currentNode->getNextNode();
+            }
+            // Node* nextNode = (*currentNode).getNextNode();
+            Node* insertedNode = new Node;
+            (*insertedNode) = Node(element, currentNode->getNextNode());
+            currentNode->setAddress(insertedNode);
+            lengthOfList++;  
         }
 
+        void deleteNode(int index){
+            if(lengthOfList == 1){
+                free(firstNode);
+                lengthOfList--;
+                return;
+            }
+            Node* currentNode = firstNode;
+            for(int i = 0; i < index-1; i++){
+                currentNode = currentNode->getNextNode();
+            }
+            Node* nextNode = currentNode->getNextNode();
+            Node* pointer = nextNode->getNextNode();
+            free(nextNode);
+            currentNode->setAddress(pointer);
+            lengthOfList--;
+        }
+
+        void reverseListWithNewList(){
+            Node* currentNode = firstNode;
+            linkedList list2(0, {});
+            Node* pointer = new Node;
+            for(int i = (lengthOfList-1); i > 0; i--){
+                Node* prevNode = new Node;
+                // prevNode->setValue(currentNode->getValue());
+                // prevNode->setAddress(pointer);
+                list2.insertElement(0, prevNode->getValue());
+                pointer = currentNode;
+                currentNode = prevNode;
+                currentNode = currentNode->getNextNode();
+                // printList();
+            }
+            freeMemory();
+            firstNode = currentNode;
+        }
 
     };
 
 
 int main(){
 
-    int passedArray[] = {};
+    int passedArray[] = {1,2,3,4,5,6,7,8};
     int sizeOfPassedArray = sizeof(passedArray)/sizeof(int);
-    printf("\n1\n");
+    // printf("\n1\n");
     linkedList list1 = linkedList(sizeOfPassedArray, passedArray);
     // list1.printList();
     // printf("Element at Index: 2 is %d", list1.getElementByIndex(2));
-    printf("\n1\n");
-    list1.insertElement(0, 2);
-    printf("\n1\n");
+    // printf("\n1\n");
+    // list1.insertElement(0, 3);
+    // printf("\n1\n");
+    list1.reverseListWithNewList();
     list1.printList();
+    list1.freeMemory();
 }
