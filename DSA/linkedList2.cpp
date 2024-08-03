@@ -138,6 +138,7 @@ class linkedList{
             Node* insertedNode = new Node;
             (*insertedNode) = Node(element, (*currentNode).getNextNode());
             (*currentNode).setAddress(insertedNode);
+            lengthOfList++;
 
         }
     };
