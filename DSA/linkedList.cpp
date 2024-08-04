@@ -41,6 +41,13 @@ class Node{
         Node* getNextNode(){
             return nextNode;
         }
+
+        bool operator == (Node &localNode){
+            if((value == localNode.getValue()) && (nextNode == localNode.getNextNode())){
+                return true;
+            }
+            return false;
+        }
 };
 
 
@@ -97,12 +104,13 @@ class linkedList{
                 }
             }
         }
-
+         
         void printList(){
             // First Print
             Node* currentNode = firstNode;
+            printf("\n");
             for(int i = 0; i < lengthOfList; i++){
-                printf("\n%d: %d\n", i, currentNode->getValue());
+                printf("%d ", currentNode->getValue());
                 // printf("Next Node Location: %p\n", (*currentNode).getNextNode());
                 currentNode = currentNode->getNextNode();
             }
@@ -197,29 +205,95 @@ class linkedList{
         }
 
         void reverseListWithNewList(){
+            if(lengthOfList<=1){
+                return;
+            }
             Node* currentNode = firstNode;
             linkedList list2(0, {});
             Node* pointer = new Node;
-            for(int i = (lengthOfList-1); i > 0; i--){
-                Node* prevNode = new Node;
+            Node* prevNode = new Node;
+            for(int i = 0; i < lengthOfList-1; i++){
                 // prevNode->setValue(currentNode->getValue());
                 // prevNode->setAddress(pointer);
-                list2.insertElement(0, prevNode->getValue());
+                list2.insertElement(0, currentNode->getValue());
                 pointer = currentNode;
-                currentNode = prevNode;
+                prevNode = currentNode;
                 currentNode = currentNode->getNextNode();
-                // printList();
+                // list2.printList();
             }
+            // currentNode = currentNode->getNextNode();
+            list2.insertElement(0, currentNode->getValue());
+            // currentNode = prevNode;
+            // list2.printList();
+            // printf("\nCurrent: %d %p %d\n", currentNode->getValue(), currentNode->getNextNode(), (currentNode->getNextNode())->getValue());
             freeMemory();
-            firstNode = currentNode;
+            firstNode = list2.firstNode;
+            
+            // printf("\nCurrent: %d %p %d\n", currentNode->getValue(), currentNode->getNextNode(), (currentNode->getNextNode())->getValue());
+            // printf("\n Inside Print \n");
+            // printList();
+            // list2.freeMemory();
         }
 
-    };
+        void reverseWithLoop(){
+            if(lengthOfList<=1){
+                return;
+            }
+            Node* previousNode = firstNode;
+            Node* currentNode = previousNode->getNextNode();
+            Node* nextNode = currentNode->getNextNode();
+            for(int i = 1; i < lengthOfList; i++){
+                currentNode->setAddress(previousNode);
+                previousNode = currentNode;
+                currentNode = nextNode;
+                nextNode = nextNode->getNextNode(); 
+                // printf("\n%d %d\n", currentNode->getNextNode(), currentNode->getValue());
+            }
+            firstNode->setAddress(container);
+            Node* tempNode = lastNode;
+            lastNode = firstNode;
+            firstNode = tempNode;
+        }
+
+        void printReverseWithRecursionCaller(){
+            if(lengthOfList<=1){
+                printList();
+                return;
+            }
+            printReverseWithRecursion(firstNode);
+        }
+
+        void printReverseWithRecursion(Node* currentNode){
+            if(currentNode==lastNode){
+                printf(" %d", currentNode->getValue());
+                return;
+            }
+            printReverseWithRecursion(currentNode->getNextNode());
+            printf(" %d", currentNode->getValue());
+        }
+
+        void reverseWithRecursion(Node* localNode){
+            if (localNode == lastNode){
+                return;
+            }
+            Node* currentNode = localNode->getNextNode();
+            reverseWithRecursion(currentNode);
+            currentNode->setAddress(localNode);
+        }
+
+        void reverseWithRecursionCaller(){
+            reverseWithRecursion(firstNode);
+            firstNode->setAddress(container);
+            Node* tempNode = lastNode;
+            lastNode = firstNode;
+            firstNode = tempNode;
+        }
+};
 
 
 int main(){
 
-    int passedArray[] = {1,2,3,4,5,6,7,8};
+    int passedArray[] = {1, 2, 3, 4, 5, 6, 7};
     int sizeOfPassedArray = sizeof(passedArray)/sizeof(int);
     // printf("\n1\n");
     linkedList list1 = linkedList(sizeOfPassedArray, passedArray);
@@ -228,7 +302,10 @@ int main(){
     // printf("\n1\n");
     // list1.insertElement(0, 3);
     // printf("\n1\n");
-    list1.reverseListWithNewList();
+    // list1.reverseListWithNewList();
+    // list1.reverseWithLoop();
+    // list1.printReverseWithRecursionCaller();
+    list1.reverseWithRecursionCaller();
     list1.printList();
     list1.freeMemory();
 }
