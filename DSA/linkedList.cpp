@@ -54,7 +54,6 @@ class linkedList{
     private:
         Node* firstNode;
         Node* lastNode;
-        int sizeOfNode = sizeof(Node);
         int lengthOfList = 0;
         int iter;
         // Node* container = (Node*)malloc(sizeof(Node)); // Container for last node
