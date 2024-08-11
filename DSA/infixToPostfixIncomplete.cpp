@@ -173,7 +173,7 @@ class postFix{
                 else if(getOperatorPriority(currentCharacter) < getOperatorPriority(_operatorStack->top())){
                     // _insertOperatorNext = true;
                     cout << "Found: " << _operatorStack->top() << endl;
-                    pushOperator(_operatorStack->top());
+                    pushOperator(_operatorStack->pop());
                     cout << _postFix << endl;
                 }
 
@@ -184,10 +184,7 @@ class postFix{
         }
 
         void pushOperator(char operatorA){
-
-            if(_insertOperatorNext){
-                _postFix.append(" " + convertOperator(operatorA));
-            }
+            _postFix.append(" " + convertOperator(operatorA));
         }
 
         bool checkOperand(char element){
