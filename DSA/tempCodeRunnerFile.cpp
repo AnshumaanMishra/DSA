@@ -1,2 +1,3 @@
-nt \n");
-            // printList();
+OfStack; i++){
+            //     printf("\n%d ", *(_mainStack + i));
+            // }

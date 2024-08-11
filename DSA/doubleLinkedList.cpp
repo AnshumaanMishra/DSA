@@ -84,14 +84,23 @@ class linkedList{
             }
         }
 
+        int getElementByIndex(int index){
+            Node* currentNode = firstNode;
+            for(int i = 0; i < index; i++){
+                currentNode = currentNode->nextNodeAddress;
+                // printf("\nValue = %d\n", currentNode->value);
+            }
+            return currentNode->value;
+        }
+
         void freeMemory(){
             Node* currentNode = lastNode;
             for(int i = (lengthOfList-1); i >= 0; i--){
-                printf("%d ", currentNode->value);
+                // printf("%d ", currentNode->value);
                 Node* tempNode = currentNode->prevNodeAddress; 
                 free(currentNode);
                 currentNode = tempNode;
-                free(tempNode);
+                // free(tempNode);
             }
         }
 };
@@ -103,6 +112,7 @@ int main(){
     linkedList list1 = linkedList(passedSize, passedArray);
     list1.addNode(6, 2);
     list1.printList();
+    // printf("%d\n", list1.getElementByIndex(3));
     // list1.printListReverse();
     list1.freeMemory();
 }
