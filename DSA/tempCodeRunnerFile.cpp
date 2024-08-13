@@ -1,3 +1,3 @@
-OfStack; i++){
-            //     printf("\n%d ", *(_mainStack + i));
+
+            //     printf("%d ", (_startIndex + i));
             // }

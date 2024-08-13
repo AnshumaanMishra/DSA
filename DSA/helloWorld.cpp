@@ -1,31 +1,23 @@
 #include <stdio.h>
-#include <string>
-#include <cstring>
-#include <iostream>
-using namespace std;
 
-string convertOperator(char operatorCharacter){
-            if(operatorCharacter == '+'){
-                return "+";
-            }
-            else if(operatorCharacter == '-'){
-                return "-";
-            }
-            else if(operatorCharacter == '*'){
-                return "*";
-            }
-            else if(operatorCharacter == '/'){
-                return "/";
-            }
-            else if(operatorCharacter == '^'){
-                return "^";
-            }
-            return "";
+class newclass{
+    private:
+        int* _mainArray;
+
+    public:
+        newclass(){
+            int _mainArray[10];
+            _mainArray[5] = 5;
+            printf("%p\n", _mainArray); 
         }
 
+        void getelement(){
+            printf("%p\n", _mainArray);
+        }
+};
+
 int main(){
-    string element = "12345";
-    element.append(" " + convertOperator('+'));
-    cout << element << endl;
+    newclass a = newclass();
+    a.getelement();
     return 0;
 }
