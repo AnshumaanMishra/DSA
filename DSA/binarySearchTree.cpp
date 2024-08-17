@@ -1,15 +1,92 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-struct Node{
+
+struct TreeNode{
     int _value;
-    Node* _leftChild;
-    Node* _rightChild;
-    Node* _parentNode;
+    TreeNode* _leftChild;
+    TreeNode* _rightChild;
+    TreeNode* _parentTreeNode;
 };
+
+struct QueueNode{
+    TreeNode* _value;
+    QueueNode* _nextQueueNodeAddress;
+};
+
+class Queue{
+    private:
+        TreeNode** _head;
+        TreeNode** _tail;
+        QueueNode* _firstQueueNode;
+        QueueNode* _lastQueueNode;
+        QueueNode* _container = new QueueNode;
+        int _lengthOfQueue = 0;
+        QueueNode* currentQueueNode = new QueueNode;
+        QueueNode* prevQueueNode = new QueueNode;
+
+    public:
+        Queue(int length, TreeNode** localArray){
+            for(int i = 0; i < length; i++){
+                // currentQueueNode = new QueueNode;
+                if(length>0){
+                    currentQueueNode = EnQueue(localArray[i]);
+                }
+                if(i==0){
+                    _firstQueueNode = currentQueueNode;
+                }
+                _lastQueueNode = currentQueueNode;
+            }
+        }
+
+        QueueNode* EnQueue(TreeNode* element){
+            // QueueNode* currentQueueNode = _lastQueueNode;
+            QueueNode* insertedQueueNode = new QueueNode;
+
+            insertedQueueNode->_value = element;
+            insertedQueueNode->_nextQueueNodeAddress = NULL;
+            if(_lengthOfQueue >= 1){
+                _lastQueueNode->_nextQueueNodeAddress = insertedQueueNode;
+            }
+
+            if(_lengthOfQueue < 1){
+                _firstQueueNode = insertedQueueNode;
+            }
+            _lastQueueNode = insertedQueueNode;
+            _lengthOfQueue ++;
+            return insertedQueueNode;
+        }
+
+        TreeNode* DeQueue(){
+            QueueNode* tempQueueNode = _firstQueueNode;
+            _firstQueueNode = tempQueueNode->_nextQueueNodeAddress;
+            _lengthOfQueue -- ;
+            return tempQueueNode->_value;
+        }
+
+        void printArray(){
+            QueueNode* currentQueueNode = _firstQueueNode;
+            for(int i = 0; i < _lengthOfQueue; i++){
+                printf("%d\n", currentQueueNode->_value);
+                currentQueueNode = currentQueueNode->_nextQueueNodeAddress;
+            }
+        }
+
+        TreeNode* front(){
+            return _firstQueueNode->_value;
+        }
+
+        bool isEmpty(){
+            return _lengthOfQueue <= 0;
+        }
+
+
+};
+
 
 class BinarySearchTree{
     private:
-        Node* _rootNode = NULL;
+        TreeNode* _rootTreeNode = NULL;
         int _rootHeight;
         // int 
 
@@ -25,145 +102,145 @@ class BinarySearchTree{
         }
 
         void insert(int element){
-            if(_rootNode == NULL){
-                Node* tempNode = new Node;
-                tempNode->_value = element;
-                tempNode->_leftChild = NULL;
-                tempNode->_rightChild = NULL;
-                _rootNode = tempNode;
+            if(_rootTreeNode == NULL){
+                TreeNode* tempTreeNode = new TreeNode;
+                tempTreeNode->_value = element;
+                tempTreeNode->_leftChild = NULL;
+                tempTreeNode->_rightChild = NULL;
+                _rootTreeNode = tempTreeNode;
                 return;
             }
-            Node* currentNode = _rootNode;
-            checkPosition(element, currentNode);            
+            TreeNode* currentTreeNode = _rootTreeNode;
+            checkPosition(element, currentTreeNode);            
         }
 
-        int findHeight(Node* currentNode){
-            if(!leftChildExists(currentNode) && !rightChildExists(currentNode)){
+        int findHeight(TreeNode* currentTreeNode){
+            if(!leftChildExists(currentTreeNode) && !rightChildExists(currentTreeNode)){
                 return 0;
             }
-            else if(leftChildExists(currentNode) && !rightChildExists(currentNode)){
-                return 1 + findHeight(currentNode->_leftChild);
+            else if(leftChildExists(currentTreeNode) && !rightChildExists(currentTreeNode)){
+                return 1 + findHeight(currentTreeNode->_leftChild);
             }
 
-            else if(!leftChildExists(currentNode) && rightChildExists(currentNode)){
-                return 1 + findHeight(currentNode->_rightChild);
+            else if(!leftChildExists(currentTreeNode) && rightChildExists(currentTreeNode)){
+                return 1 + findHeight(currentTreeNode->_rightChild);
             }
             else{
-                int rightHeight = findHeight(currentNode->_leftChild);
-                int leftHeight = findHeight(currentNode->_rightChild);
+                int rightHeight = findHeight(currentTreeNode->_leftChild);
+                int leftHeight = findHeight(currentTreeNode->_rightChild);
                 int value = (rightHeight > leftHeight) ? (1 + rightHeight) : (1 + leftHeight);
                 return value;
             }
             return 0;
         }
 
-        int returnMinimum(Node* currentNode){
-            if(leftChildExists(currentNode)){
-                return returnMinimum(currentNode->_leftChild);
+        int returnMinimum(TreeNode* currentTreeNode){
+            if(leftChildExists(currentTreeNode)){
+                return returnMinimum(currentTreeNode->_leftChild);
             }
-            return currentNode->_value;
+            return currentTreeNode->_value;
         }
 
-        int returnMaximum(Node* currentNode){
-            if(rightChildExists(currentNode)){
-                return returnMaximum(currentNode->_rightChild);
+        int returnMaximum(TreeNode* currentTreeNode){
+            if(rightChildExists(currentTreeNode)){
+                return returnMaximum(currentTreeNode->_rightChild);
             }
-            return currentNode->_value;
+            return currentTreeNode->_value;
         }
 
-        void checkPosition(int element, Node* currentNode){
-            if((element < currentNode->_value) && leftChildExists(currentNode)){
-                currentNode = currentNode->_leftChild;
-                checkPosition(element, currentNode);
+        void checkPosition(int element, TreeNode* currentTreeNode){
+            if((element < currentTreeNode->_value) && leftChildExists(currentTreeNode)){
+                currentTreeNode = currentTreeNode->_leftChild;
+                checkPosition(element, currentTreeNode);
             }
-            else if((element < currentNode->_value) && !leftChildExists(currentNode)){
-                Node* tempNode = new Node;
-                tempNode->_value = element;
-                tempNode->_leftChild = NULL;
-                tempNode->_rightChild = NULL;
-                tempNode->_parentNode = currentNode;
-                currentNode->_leftChild = tempNode;
+            else if((element < currentTreeNode->_value) && !leftChildExists(currentTreeNode)){
+                TreeNode* tempTreeNode = new TreeNode;
+                tempTreeNode->_value = element;
+                tempTreeNode->_leftChild = NULL;
+                tempTreeNode->_rightChild = NULL;
+                tempTreeNode->_parentTreeNode = currentTreeNode;
+                currentTreeNode->_leftChild = tempTreeNode;
             }
-            else if((element > currentNode->_value) && rightChildExists(currentNode)){
-                currentNode = currentNode->_rightChild;
-                checkPosition(element, currentNode);
+            else if((element > currentTreeNode->_value) && rightChildExists(currentTreeNode)){
+                currentTreeNode = currentTreeNode->_rightChild;
+                checkPosition(element, currentTreeNode);
             }
             else{
-                Node* tempNode = new Node;
-                tempNode->_value = element;
-                tempNode->_leftChild = NULL;
-                tempNode->_rightChild = NULL;
-                tempNode->_parentNode = currentNode;
-                currentNode->_rightChild = tempNode;
+                TreeNode* tempTreeNode = new TreeNode;
+                tempTreeNode->_value = element;
+                tempTreeNode->_leftChild = NULL;
+                tempTreeNode->_rightChild = NULL;
+                tempTreeNode->_parentTreeNode = currentTreeNode;
+                currentTreeNode->_rightChild = tempTreeNode;
             }
         }
         
-        bool search(int element, Node* currentNode){
-            if(currentNode->_value == element){
+        bool search(int element, TreeNode* currentTreeNode){
+            if(currentTreeNode->_value == element){
                 return true;
             }
-            else if((element < currentNode->_value) && leftChildExists(currentNode)){
-                return search(element, currentNode->_leftChild);
+            else if((element < currentTreeNode->_value) && leftChildExists(currentTreeNode)){
+                return search(element, currentTreeNode->_leftChild);
             }
-            else if((element > currentNode->_value) && rightChildExists(currentNode)){
-                return search(element, currentNode->_rightChild);
+            else if((element > currentTreeNode->_value) && rightChildExists(currentTreeNode)){
+                return search(element, currentTreeNode->_rightChild);
             }
             return false;
         }
 
-        bool leftChildExists(Node* currentNode){
-            if(currentNode->_leftChild != NULL){
+        bool leftChildExists(TreeNode* currentTreeNode){
+            if(currentTreeNode->_leftChild != NULL){
                 return true;
             }
             return false;
         }
         
-        bool rightChildExists(Node* currentNode){
-            if(currentNode->_rightChild != NULL){
+        bool rightChildExists(TreeNode* currentTreeNode){
+            if(currentTreeNode->_rightChild != NULL){
                 return true;
             }
             return false;
         }
 
-        Node* getRootNode(){
-            return _rootNode;
+        TreeNode* getRootTreeNode(){
+            return _rootTreeNode;
         }
 
-        void enterNode(Node* currentNode){
-            printf("%d->", currentNode->_value);
-            if(leftChildExists(currentNode)){
-                enterNode(currentNode->_leftChild);
+        void enterTreeNode(TreeNode* currentTreeNode){
+            printf("%d->", currentTreeNode->_value);
+            if(leftChildExists(currentTreeNode)){
+                enterTreeNode(currentTreeNode->_leftChild);
             }
-            if(rightChildExists(currentNode)){
-                enterNode(currentNode->_rightChild);
+            if(rightChildExists(currentTreeNode)){
+                enterTreeNode(currentTreeNode->_rightChild);
             }
             printf("\n");
         }
 
-        void lengthFirstTraversal(Node* currentNode){
-            printf("%d, ", currentNode->_value);
-            if(leftChildExists(currentNode)){
-                lengthFirstTraversal(currentNode->_leftChild);
+        void lengthFirstTraversal(TreeNode* currentTreeNode){
+            printf("%d, ", currentTreeNode->_value);
+            if(leftChildExists(currentTreeNode)){
+                lengthFirstTraversal(currentTreeNode->_leftChild);
             }
-            if(rightChildExists(currentNode)){
-                lengthFirstTraversal(currentNode->_rightChild);
+            if(rightChildExists(currentTreeNode)){
+                lengthFirstTraversal(currentTreeNode->_rightChild);
             }
         }
 
-        void breadthFirstTraversal(Node* currentNode){
-            // printf("%d, ", _rootNode->_value);
-            if(leftChildExists(currentNode))
-                printf("%d, ", currentNode->_leftChild->_value);
+        void breadthFirstTraversal(TreeNode* currentTreeNode){
+            // printf("%d, ", _rootTreeNode->_value);
+            if(leftChildExists(currentTreeNode))
+                printf("%d, ", currentTreeNode->_leftChild->_value);
             
-            if(rightChildExists(currentNode))
-                printf("%d, ", currentNode->_rightChild->_value);
+            if(rightChildExists(currentTreeNode))
+                printf("%d, ", currentTreeNode->_rightChild->_value);
             
-            if(leftChildExists(currentNode)){
-                breadthFirstTraversal(currentNode->_leftChild);
+            if(leftChildExists(currentTreeNode)){
+                breadthFirstTraversal(currentTreeNode->_leftChild);
             }
             
-            if(rightChildExists(currentNode)){
-                breadthFirstTraversal(currentNode->_rightChild);
+            if(rightChildExists(currentTreeNode)){
+                breadthFirstTraversal(currentTreeNode->_rightChild);
             }
 
         }
@@ -179,8 +256,8 @@ int main(){
     tree1.insert(6);
     tree1.insert(8);
     tree1.insert(7);
-    printf("%d\n", tree1.returnMaximum(tree1.getRootNode()));
-    printf("%d\n", tree1.findHeight(tree1.getRootNode()));
-    // tree1.enterNode(tree1.getRootNode());
-    tree1.breadthFirstTraversal(tree1.getRootNode());
+    printf("%d\n", tree1.returnMaximum(tree1.getRootTreeNode()));
+    printf("%d\n", tree1.findHeight(tree1.getRootTreeNode()));
+    // tree1.enterTreeNode(tree1.getRootTreeNode());
+    tree1.breadthFirstTraversal(tree1.getRootTreeNode());
 }

@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node{
+struct QueueNode{
     int _value;
-    Node* _nextNodeAddress;
+    QueueNode* _nextQueueNodeAddress;
 };
 
 
@@ -11,62 +11,62 @@ class Queue{
     private:
         int* _head;
         int* _tail;
-        Node* _firstNode;
-        Node* _lastNode;
-        Node* _container = new Node;
+        QueueNode* _firstQueueNode;
+        QueueNode* _lastQueueNode;
+        QueueNode* _container = new QueueNode;
         int _lengthOfQueue = 0;
-        Node* currentNode = new Node;
-        Node* prevNode = new Node;
+        QueueNode* currentQueueNode = new QueueNode;
+        QueueNode* prevQueueNode = new QueueNode;
 
     public:
         Queue(int length, int* localArray){
             for(int i = 0; i < length; i++){
-                // currentNode = new Node;
+                // currentQueueNode = new QueueNode;
                 if(length>0){
-                    currentNode = EnQueue(localArray[i]);
+                    currentQueueNode = EnQueue(localArray[i]);
                 }
                 if(i==0){
-                    _firstNode = currentNode;
+                    _firstQueueNode = currentQueueNode;
                 }
-                _lastNode = currentNode;
+                _lastQueueNode = currentQueueNode;
             }
         }
 
-        Node* EnQueue(int element){
-            // Node* currentNode = _lastNode;
-            Node* insertedNode = new Node;
+        QueueNode* EnQueue(int element){
+            // QueueNode* currentQueueNode = _lastQueueNode;
+            QueueNode* insertedQueueNode = new QueueNode;
 
-            insertedNode->_value = element;
-            insertedNode->_nextNodeAddress = NULL;
+            insertedQueueNode->_value = element;
+            insertedQueueNode->_nextQueueNodeAddress = NULL;
             if(_lengthOfQueue >= 1){
-                _lastNode->_nextNodeAddress = insertedNode;
+                _lastQueueNode->_nextQueueNodeAddress = insertedQueueNode;
             }
 
             if(_lengthOfQueue < 1){
-                _firstNode = insertedNode;
+                _firstQueueNode = insertedQueueNode;
             }
-            _lastNode = insertedNode;
+            _lastQueueNode = insertedQueueNode;
             _lengthOfQueue ++;
-            return insertedNode;
+            return insertedQueueNode;
         }
 
         int DeQueue(){
-            Node* tempNode = _firstNode;
-            _firstNode = tempNode->_nextNodeAddress;
+            QueueNode* tempQueueNode = _firstQueueNode;
+            _firstQueueNode = tempQueueNode->_nextQueueNodeAddress;
             _lengthOfQueue -- ;
-            return tempNode->_value;
+            return tempQueueNode->_value;
         }
 
         void printArray(){
-            Node* currentNode = _firstNode;
+            QueueNode* currentQueueNode = _firstQueueNode;
             for(int i = 0; i < _lengthOfQueue; i++){
-                printf("%d\n", currentNode->_value);
-                currentNode = currentNode->_nextNodeAddress;
+                printf("%d\n", currentQueueNode->_value);
+                currentQueueNode = currentQueueNode->_nextQueueNodeAddress;
             }
         }
 
         int front(){
-            return _firstNode->_value;
+            return _firstQueueNode->_value;
         }
 
         bool isEmpty(){
