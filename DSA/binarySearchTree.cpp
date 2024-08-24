@@ -201,17 +201,11 @@ class BinarySearchTree{
         }
 
         bool leftChildExists(TreeNode* currentTreeNode){
-            if(currentTreeNode->_leftChild != NULL){
-                return true;
-            }
-            return false;
+            return (currentTreeNode->_leftChild != NULL);
         }
         
         bool rightChildExists(TreeNode* currentTreeNode){
-            if(currentTreeNode->_rightChild != NULL){
-                return true;
-            }
-            return false;
+            return (currentTreeNode->_rightChild != NULL);
         }
 
         TreeNode* getRootTreeNode(){
@@ -259,6 +253,30 @@ class BinarySearchTree{
             }
         }
 
+        bool checkBST(TreeNode* currentNode){
+            bool returnValue = 0;
+            if(leftChildExists(currentNode)){
+                returnValue = checkLeft(currentNode);
+                returnValue = returnValue*checkBST(currentNode->_rightChild);
+            }
+            if(rightChildExists(currentNode)){
+                returnValue = returnValue*checkRight(currentNode);
+                returnValue = returnValue*checkBST(currentNode->_leftChild);
+            }
+            if(!(leftChildExists(currentNode) && rightChildExists(currentNode))){
+                returnValue = 1;
+            }
+            return returnValue;
+        }
+
+        bool checkLeft(TreeNode* currentNode){
+            return currentNode->_leftChild->_value < currentNode->_value;
+        }
+
+        bool checkRight(TreeNode* currentNode){
+            return currentNode->_rightChild->_value > currentNode->_value;
+        }
+
 };
 
 int main(){
@@ -274,5 +292,6 @@ int main(){
     printf("%d\n", tree1.returnMaximum(tree1.getRootTreeNode()));
     printf("%d\n", tree1.findHeight(tree1.getRootTreeNode()));
     // tree1.enterTreeNode(tree1.getRootTreeNode());
+    printf("BST: %d", tree1.checkBST(tree1.getRootTreeNode()));
     tree1.breadthFirstTraversal();
 }
