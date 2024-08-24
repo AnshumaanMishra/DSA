@@ -139,7 +139,8 @@ class BinarySearchTree{
                 return currentChild;
             }
             else if(rightChildExists(currentTreeNode) && currentTreeNode->_rightChild->_value == element){
-                deleteQueueTraversal(currentTreeNode);
+                deleteQueueTraversal(currentTreeNode->_rightChild);
+                _deleteQueue.DeQueue();
                 // _deleteQueue.DeQueue();
                 TreeNode* currentChild = currentTreeNode->_rightChild;
                 currentTreeNode->_rightChild = NULL;
@@ -160,12 +161,22 @@ class BinarySearchTree{
             return NULL;
         }
 
+        void efficientDelete(int element){
+            TreeNode* currentNode = search(element, getRootTreeNode());
+            TreeNode* minNode = returnMinimum(currentNode->_rightChild);
+            currentNode->_value = minNode->_value;
+            currentNode->_rightChild = minNode->_rightChild;
+            currentNode->_leftChild = minNode->_leftChild;
+            minNode->_parentTreeNode->_leftChild=NULL;
+        }
+
         void insertQueueElements(Queue localQueue){
             while(!localQueue.isEmpty()){
                 int removedValue = localQueue.DeQueue()->_value;
                 insert(removedValue);
                 printf("Removed value: %d, After Insertion: ", removedValue);
-                breadthFirstTraversal();
+                lengthFirstTraversal(getRootTreeNode());
+                printf("\n");
             }
         }
 
@@ -219,6 +230,9 @@ class BinarySearchTree{
             else if((element > currentTreeNode->_value) && rightChildExists(currentTreeNode)){
                 currentTreeNode = currentTreeNode->_rightChild;
                 checkPosition(element, currentTreeNode);
+            }
+            else if((element == currentTreeNode->_value)){
+                return;
             }
             else{
                 TreeNode* tempTreeNode = new TreeNode;
@@ -287,12 +301,12 @@ class BinarySearchTree{
         }
 
         void breadthFirstTraversal(){
-            // int i = 0;
             while(_traversalQueue.getLength() > 0){
                 TreeNode* currentTreeNode = _traversalQueue.DeQueue();
                 printf("%d, ", currentTreeNode->_value);
                 EnQueueChildren(currentTreeNode, _traversalQueue);
             }
+            // printf("IsEmpty %d", _traversalQueue.isEmpty());
             if(_traversalQueue.isEmpty()){
                 _traversalQueue.EnQueue(_rootTreeNode);
                 printf("\n");
@@ -357,8 +371,10 @@ int main(){
     printf("\n");
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
     printf("\n");
+    // tree1.deleteByValue(3, tree1.getRootTreeNode());
+    tree1.efficientDelete(3);
+
     printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
-    tree1.deleteByValue(6, tree1.getRootTreeNode());
-    tree1.breadthFirstTraversal();
+    tree1.lengthFirstTraversal(tree1.getRootTreeNode());
     // printf("\n");
 }
