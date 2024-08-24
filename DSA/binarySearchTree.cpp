@@ -304,7 +304,7 @@ class BinarySearchTree{
             while(_traversalQueue.getLength() > 0){
                 TreeNode* currentTreeNode = _traversalQueue.DeQueue();
                 printf("%d, ", currentTreeNode->_value);
-                EnQueueChildren(currentTreeNode, _traversalQueue);
+                EnQueueChildren(currentTreeNode, &_traversalQueue);
             }
             // printf("IsEmpty %d", _traversalQueue.isEmpty());
             if(_traversalQueue.isEmpty()){
@@ -313,12 +313,12 @@ class BinarySearchTree{
             }
         }
 
-        void EnQueueChildren(TreeNode* currentTreeNode, Queue localQueue){
+        void EnQueueChildren(TreeNode* currentTreeNode, Queue* localQueuePointer){
             if(leftChildExists(currentTreeNode)){
-                localQueue.EnQueue(currentTreeNode->_leftChild);
+                localQueuePointer->EnQueue(currentTreeNode->_leftChild);
             }
             if(rightChildExists(currentTreeNode)){
-                localQueue.EnQueue(currentTreeNode->_rightChild);
+                localQueuePointer->EnQueue(currentTreeNode->_rightChild);
             }
         }
 
@@ -376,5 +376,7 @@ int main(){
 
     printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
-    // printf("\n");
+    printf("\n");
+    tree1.breadthFirstTraversal();
+    printf("\n");
 }
