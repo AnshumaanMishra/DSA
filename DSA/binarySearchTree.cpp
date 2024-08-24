@@ -161,13 +161,35 @@ class BinarySearchTree{
             return NULL;
         }
 
-        void efficientDelete(int element){
-            TreeNode* currentNode = search(element, getRootTreeNode());
-            TreeNode* minNode = returnMinimum(currentNode->_rightChild);
-            currentNode->_value = minNode->_value;
-            currentNode->_rightChild = minNode->_rightChild;
-            currentNode->_leftChild = minNode->_leftChild;
-            minNode->_parentTreeNode->_leftChild=NULL;
+        TreeNode* efficientDelete(int element, TreeNode* currentNode){
+            if(element < currentNode->_value){
+                currentNode->_leftChild = efficientDelete(element, currentNode->_leftChild);   
+            }
+            else if(element > currentNode->_value){
+                currentNode->_rightChild = efficientDelete(element, currentNode->_leftChild);   
+            }
+            else{
+                if(!leftChildExists(currentNode) && !rightChildExists(currentNode)){
+                    delete currentNode;
+                    currentNode = NULL;
+                }
+                else if(!leftChildExists(currentNode) && rightChildExists(currentNode)){
+                    TreeNode* temp = currentNode;
+                    currentNode = currentNode->_rightChild;
+                }
+                else if(!rightChildExists(currentNode) && leftChildExists(currentNode)){
+                    TreeNode* temp = currentNode;
+                    currentNode = currentNode->_leftChild;
+                }
+                else{
+                    TreeNode* temp = returnMinimum(currentNode->_rightChild);
+                    currentNode->_value = temp->_value;
+                    // printf("\n%d\n", temp->_value);
+                    currentNode->_rightChild = efficientDelete(temp->_value, currentNode->_rightChild);
+                }
+            }
+            return currentNode;
+            
         }
 
         void insertQueueElements(Queue localQueue){
@@ -372,7 +394,7 @@ int main(){
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
     printf("\n");
     // tree1.deleteByValue(3, tree1.getRootTreeNode());
-    tree1.efficientDelete(3);
+    tree1.efficientDelete(2, tree1.getRootTreeNode());
 
     printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
