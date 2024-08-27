@@ -335,6 +335,22 @@ class BinarySearchTree{
             }
         }
 
+        void inorderTraversal(TreeNode* currentNode){
+            if(leftChildExists(currentNode)){
+                inorderTraversal(currentNode->_leftChild);
+            }
+            printf("%d, ", currentNode->_value);
+            if(rightChildExists(currentNode)){
+                inorderTraversal(currentNode->_rightChild);
+            }
+        }
+
+        TreeNode* getInorderSuccessor(TreeNode* currentNode){
+            if(rightChildExists(currentNode)){
+                return currentNode->_rightChild;
+            }
+        }
+
         void EnQueueChildren(TreeNode* currentTreeNode, Queue* localQueuePointer){
             if(leftChildExists(currentTreeNode)){
                 localQueuePointer->EnQueue(currentTreeNode->_leftChild);
@@ -345,19 +361,14 @@ class BinarySearchTree{
         }
 
         bool checkBST(TreeNode* currentNode){
-            // printf("\nCurrentNode: %p\nCurrentValue: %d, \nRightChild: %p, \nLeftChild: %p\n", currentNode, currentNode->_value, currentNode->_rightChild, currentNode->_leftChild);
             bool returnValue;
             if(leftChildExists(currentNode)){
                 returnValue = checkLeft(currentNode);
-                // printf("\nLeftNode Checked: %d", returnValue);
                 returnValue = returnValue*checkBST(currentNode->_leftChild);
-                // printf("\nLeftTree Checked: %d", returnValue);
             }
             if(rightChildExists(currentNode)){
                 returnValue = returnValue*checkRight(currentNode);
-                // printf("\nRightNode Checked: %d", returnValue);
                 returnValue = returnValue*checkBST(currentNode->_rightChild);
-                // printf("\nRightTree Checked: %d", returnValue);
             }
             if(!leftChildExists(currentNode) && !rightChildExists(currentNode)){
                 returnValue = 1;
@@ -394,11 +405,11 @@ int main(){
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
     printf("\n");
     // tree1.deleteByValue(3, tree1.getRootTreeNode());
-    tree1.efficientDelete(2, tree1.getRootTreeNode());
+    // tree1.efficientDelete(2, tree1.getRootTreeNode());
 
     printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
     tree1.lengthFirstTraversal(tree1.getRootTreeNode());
     printf("\n");
-    tree1.breadthFirstTraversal();
+    tree1.inorderTraversal(tree1.getRootTreeNode());
     printf("\n");
 }
