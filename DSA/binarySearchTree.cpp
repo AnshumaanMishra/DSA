@@ -99,6 +99,7 @@ class BinarySearchTree{
         int _rootHeight;
         Queue _traversalQueue;
         Queue _deleteQueue;
+        TreeNode* _nearestLeftParent = NULL;
         // int 
 
     public:
@@ -280,7 +281,7 @@ class BinarySearchTree{
         }
 
         bool leftChildExists(TreeNode* currentTreeNode){
-            return (currentTreeNode->_leftChild != NULL);
+            return !(currentTreeNode->_leftChild == NULL);
         }
         
         bool rightChildExists(TreeNode* currentTreeNode){
@@ -345,10 +346,40 @@ class BinarySearchTree{
             }
         }
 
-        TreeNode* getInorderSuccessor(TreeNode* currentNode){
-            if(rightChildExists(currentNode)){
-                return currentNode->_rightChild;
+        TreeNode* getInorderSuccessor(TreeNode* passedNode, TreeNode* currentNode){
+            if(passedNode == returnMaximum(_rootTreeNode)){
+                printf("\n%d is the last node in an inorder traversal of the binary tree\n", passedNode->_value);
+                return passedNode;
             }
+            if(rightChildExists(passedNode)){
+                // printf("\nRight child of %d is %d\n", passedNode->_value, passedNode->_rightChild->_value);
+                return returnMinimum(passedNode->_rightChild);
+            }
+            else{
+                return findNearestLeftParent(passedNode, currentNode);
+            }
+        }
+
+        TreeNode* findNearestLeftParent(TreeNode* passedNode, TreeNode* currentNode){
+            // printf("\nCurrent Node = %d ", currentNode->_value);
+            // printf("\nPassed Node  = %d\n", passedNode->_value);
+            if((leftChildExists(currentNode)) && (currentNode->_value > passedNode->_value)){
+                if(currentNode->_leftChild == passedNode){
+                    return currentNode;
+                }
+                // printf("\nLeftChild = %d \n", currentNode->_leftChild->_value);
+                TreeNode* tempNode = getInorderSuccessor(passedNode, currentNode->_leftChild);
+                // printf("\nLeftChild = %d \n", currentNode->_leftChild->_value);
+                return (tempNode) ? tempNode : currentNode;
+            }
+            if(rightChildExists(currentNode) && (currentNode->_value < passedNode->_value)){
+                return getInorderSuccessor(passedNode, currentNode->_rightChild);
+            }
+            return 0;
+        }
+
+        TreeNode* inorderSuccessor(int value){
+            return getInorderSuccessor(search(value, _rootTreeNode), _rootTreeNode);
         }
 
         void EnQueueChildren(TreeNode* currentTreeNode, Queue* localQueuePointer){
@@ -398,18 +429,19 @@ int main(){
     tree1.insert(8);
     tree1.insert(7);
     // printf("%d\n", tree1.returnMaximum(tree1.getRootTreeNode()));
-    printf("%d\n", tree1.findHeight(tree1.getRootTreeNode()));
+    // printf("%d\n", tree1.findHeight(tree1.getRootTreeNode()));
     // tree1.enterTreeNode(tree1.getRootTreeNode());
     // tree1.breadthFirstTraversal();
-    printf("\n");
-    tree1.lengthFirstTraversal(tree1.getRootTreeNode());
-    printf("\n");
+    // printf("\n");
+    // tree1.lengthFirstTraversal(tree1.getRootTreeNode());
+    // printf("\n");
     // tree1.deleteByValue(3, tree1.getRootTreeNode());
     // tree1.efficientDelete(2, tree1.getRootTreeNode());
 
-    printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
-    tree1.lengthFirstTraversal(tree1.getRootTreeNode());
-    printf("\n");
-    tree1.inorderTraversal(tree1.getRootTreeNode());
+    // printf("BST: %d\n", tree1.checkBST(tree1.getRootTreeNode()));
+    // tree1.lengthFirstTraversal(tree1.getRootTreeNode());
+    // printf("\n");
+    // tree1.inorderTraversal(tree1.getRootTreeNode());
+    printf("\nInorder Succesor = %d\n", tree1.inorderSuccessor(8)->_value);
     printf("\n");
 }
